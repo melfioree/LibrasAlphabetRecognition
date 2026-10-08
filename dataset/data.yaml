@@ -1,0 +1,32 @@
+names:
+- A
+- B
+- C
+- D
+- E
+- F
+- G
+- I
+- L
+- M
+- N
+- O
+- P
+- Q
+- R
+- S
+- T
+- U
+- Y
+- v
+- w
+nc: 21
+roboflow:
+  license: CC BY 4.0
+  project: libras-proprio
+  url: https://universe.roboflow.com/georgia-silva/libras-proprio/dataset/2
+  version: 2
+  workspace: georgia-silva
+test: ../test/images
+train: ../train/images
+val: ../valid/images

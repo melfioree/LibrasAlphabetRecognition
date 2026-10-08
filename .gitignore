@@ -6,3 +6,8 @@ dataset/*
 !dataset/.gitkeep
 database/*.db
 .venv/
+
+
+!models/best.pt
+!models/args.yaml
+!dataset/data.yaml
