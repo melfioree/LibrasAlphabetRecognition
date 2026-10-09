@@ -7,6 +7,7 @@ names:
 - F
 - G
 - I
+- K
 - L
 - M
 - N
@@ -17,16 +18,16 @@ names:
 - S
 - T
 - U
+- V
+- W
 - Y
-- v
-- w
-nc: 21
+nc: 22
 roboflow:
-  license: CC BY 4.0
-  project: libras-proprio
-  url: https://universe.roboflow.com/georgia-silva/libras-proprio/dataset/2
-  version: 2
-  workspace: georgia-silva
+  license: Private
+  project: libras-unificado
+  url: https://app.roboflow.com/mel-cabral-fiore-brito/libras-unificado/1
+  version: 1
+  workspace: mel-cabral-fiore-brito
 test: ../test/images
 train: ../train/images
 val: ../valid/images
