@@ -1,13 +1,5 @@
+.ipynb_checkpoints/
+*.checkpoint
+src/runs/
+logs/
 __pycache__/
-*.pyc
-models/*
-!models/.gitkeep
-dataset/*
-!dataset/.gitkeep
-database/*.db
-.venv/
-
-
-!models/best.pt
-!models/args.yaml
-!dataset/data.yaml
