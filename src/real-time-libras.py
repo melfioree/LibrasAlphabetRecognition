@@ -5,6 +5,7 @@ import threading
 import time
 import cv2
 import numpy as np
+import psutil
 from flask import Flask, Response, jsonify, render_template_string, request
 from picamera2 import Picamera2
 from ai_edge_litert.interpreter import Interpreter
@@ -36,7 +37,7 @@ def initialize_camera():
     print("Inicializando Picamera2...")
     picam2 = Picamera2()
     # "RGB888" no picamera2 entrega 3 canais já na ordem BGR
-    config = picam2.create_preview_configuration( 
+    config = picam2.create_preview_configuration(
         main={"size": (640, 480), "format": "RGB888"}, controls={"FrameDurationLimits": (100000, 100000)}
     )
     picam2.configure(config)
@@ -68,7 +69,7 @@ def detection_worker():
     output_details = interpreter.get_output_details()
 
     input_shape = input_details[0]['shape']  # Ex: [1, 3, 320, 320] ou [1, 320, 320, 3]
-    
+
     # Detecta automaticamente se o formato é NCHW (canais no índice 1) ou NHWC (canais no índice 3)
     if input_shape[1] == 3 or input_shape[1] == 1:
         is_nchw = True
@@ -182,15 +183,23 @@ def detection_worker():
 
         time.sleep(0.2)
 
+
 def draw_and_encode():
     with frame_lock:
         if latest_frame is None:
             return None
         img_bgr = latest_frame.copy()
 
+    # Espelha a imagem apenas para exibição (o modelo continua usando o frame original)
+    img_bgr = cv2.flip(img_bgr, 1)
+    W = img_bgr.shape[1]
+
     with detections_lock:
         for det in latest_detections:
             left, top, right, bottom = det["box"]
+
+            # Espelha também as coordenadas da caixa
+            left, right = W - right, W - left
 
             cv2.rectangle(img_bgr, (left, top), (right, bottom), (0, 0, 255), 3)
 
@@ -249,6 +258,15 @@ def index():
                         }
                     });
                 }
+                function updateStats() {
+                    $.get('/get_stats', function(s) {
+                        $('#stats').html(
+                            `RAM da Pi: <strong>${s.ram_percent}%</strong> ` +
+                            `(${s.ram_used_mb} / ${s.ram_total_mb} MB) — ` +
+                            `App: <strong>${s.app_percent}%</strong> (${s.app_mb} MB)`
+                        );
+                    });
+                }
                 function closeApp() {
                     if (confirm('Encerrar aplicação?')) {
                         $.ajax({
@@ -261,11 +279,14 @@ def index():
                 }
                 $(document).ready(function() {
                     setInterval(updateDetections, 300);
+                    setInterval(updateStats, 2000);
+                    updateStats();
                 });
             </script>
         </head>
         <body style="font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f9;">
             <h1>Reconhecimento LIBRAS em Tempo Real</h1>
+            <p id="stats" style="font-size: 16px; color: #555;">Memória: carregando...</p>
             <img src="{{ url_for('video_feed') }}" width="640" height="480" style="border: 2px solid #333; border-radius: 8px;" />
             <br><br>
             <button id="startBtn" onclick="startDetection()" style="padding: 10px 20px; font-size: 16px;">Iniciar Detecção</button>
@@ -315,6 +336,19 @@ def get_detections():
         return jsonify([])
     with detections_lock:
         return jsonify(latest_detections)
+
+
+@app.route("/get_stats")
+def get_stats():
+    mem = psutil.virtual_memory()
+    proc = psutil.Process(os.getpid())
+    return jsonify({
+        "ram_percent": mem.percent,
+        "app_percent": round(proc.memory_percent(), 1),
+        "ram_used_mb": round(mem.used / 1024 / 1024),
+        "ram_total_mb": round(mem.total / 1024 / 1024),
+        "app_mb": round(proc.memory_info().rss / 1024 / 1024),
+    })
 
 
 @app.route("/close", methods=["POST"])
