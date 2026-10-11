@@ -48,11 +48,7 @@ No teste ao vivo na Pi Zero 2 W: **56/66 acertos (84,8 %)**, **1,73 FPS** e lat�
  
 Ambiente: Raspberry Pi Zero 2 W + Camera Module v1.3 · Raspberry Pi OS 64-bit · treinamento no Kaggle (GPU T4).
  
-Instale as bibliotecas abaixo (versões testadas no `requirements.txt`):
- 
-```bash
-pip install ai-edge-litert flask psutil
-```
+Bibliotecas: `ai-edge-litert`, `flask` e `psutil` (via `pip`, versões testadas no `requirements.txt`); `picamera2`, `opencv` e `numpy` (via `apt`). Os comandos de instalação estão em [Como executar](#como-executar-na-raspberry-pi).
  
 > Nota: `picamera2`, `opencv` e `numpy` são instalados pelo `apt` (`python3-picamera2 python3-opencv python3-numpy`), e o ambiente virtual deve ser criado com `--system-site-packages`. O `picamera2` é compatível apenas com o Raspberry Pi OS (Bullseye ou posterior).
 
