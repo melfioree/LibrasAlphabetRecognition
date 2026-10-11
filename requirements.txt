@@ -1,0 +1,6 @@
+# Dependências instaladas com pip (versões testadas na Raspberry Pi Zero 2 W).
+# picamera2, numpy e opencv vêm do apt: sudo apt install -y python3-picamera2 python3-opencv python3-numpy
+# e o venv deve ser criado com --system-site-packages.
+ai-edge-litert==2.3.0
+Flask==3.1.3
+psutil==7.2.2
