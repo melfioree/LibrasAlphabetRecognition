@@ -82,6 +82,10 @@ def detection_worker():
 
     print(f"Modelo TFLite pronto! Formato: {'NCHW' if is_nchw else 'NHWC'}, Resolução: {w_in}x{h_in}")
 
+    # Log de latência por quadro (usado pelo analisar_log.py)
+    log_f = open(os.path.join(BASE_DIR, "infer_log.csv"), "w", buffering=1)
+    log_f.write("t,infer_ms,total_ms,n_deteccoes\n")
+
     while True:
         if is_detecting:
             current_arr = None
@@ -91,6 +95,7 @@ def detection_worker():
 
             if current_arr is not None:
                 try:
+                    t_start = time.perf_counter()
                     img_rgb = cv2.cvtColor(current_arr, cv2.COLOR_BGR2RGB)
                     img_resized = cv2.resize(img_rgb, (w_in, h_in))
 
@@ -109,7 +114,9 @@ def detection_worker():
                     input_data = np.expand_dims(norm_img, axis=0)
 
                     interpreter.set_tensor(input_details[0]['index'], input_data)
+                    t_inf = time.perf_counter()
                     interpreter.invoke()
+                    infer_ms = (time.perf_counter() - t_inf) * 1000
 
                     output_data = interpreter.get_tensor(output_details[0]['index'])
 
@@ -177,6 +184,9 @@ def detection_worker():
 
                     with detections_lock:
                         latest_detections = new_detections
+
+                    total_ms = (time.perf_counter() - t_start) * 1000
+                    log_f.write(f"{time.time():.3f},{infer_ms:.1f},{total_ms:.1f},{len(new_detections)}\n")
 
                 except Exception as e:
                     print(f"[Erro TFLite]: {e}")
@@ -294,7 +304,7 @@ def index():
             <button onclick="closeApp()" style="padding: 10px 20px; font-size: 16px; background-color: #ff4d4d; color: white;">Fechar</button>
             <br><br>
             <label for="confidence" style="font-size: 16px;">Confiança Mínima:</label>
-            <input type="number" id="confidence" name="confidence" min="0.05" max="1.0" step="0.05" value="0.20" onchange="updateConfidence()" style="font-size: 16px; width: 60px;">
+            <input type="number" id="confidence" name="confidence" min="0.05" max="0.5" step="0.05" value="0.20" onchange="updateConfidence()" style="font-size: 16px; width: 60px;">
             <br><br>
             <h3>Detecções Atuais:</h3>
             <div id="detections">Clique em 'Iniciar Detecção'</div>
