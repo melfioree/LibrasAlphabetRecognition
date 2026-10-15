@@ -82,8 +82,8 @@ Código deste repositório: licença MIT.
 
 ## Autoras
 
-Debora Maria Rosa Siqueira ([@debora-siqueira]) — Engenharia de Computação, UNIFEI <br>
-Mel Cabral Fiore Brito ([@melfioree]) — Engenharia de Computação, UNIFEI
+Debora Maria Rosa Siqueira ([@debora-siqueira](https://github.com/debora-siqueira)) — Engenharia de Computação, UNIFEI <br>
+Mel Cabral Fiore Brito ([@melfioree](https://github.com/debora-siqueira)) — Engenharia de Computação, UNIFEI
 
 ---
 
