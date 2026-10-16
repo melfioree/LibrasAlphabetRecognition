@@ -4,6 +4,12 @@
 
 Projeto final da Parte 1 da disciplina IESTI05 – Machine Learning System Engineering (UNIFEI), sob orientação do Prof. Marcelo Rovai ([@Mjrovai](https://github.com/Mjrovai)). Pipeline de detecção de objetos do dataset ao deploy em tempo real, que reconhece as 22 letras estáticas do alfabeto manual de LIBRAS,inferência 100% local, em um Raspberry Pi Zero 2 W.
 
+![Demonstração do reconhecimento de LIBRAS em tempo real na Raspberry Pi Zero 2 W](docs/execucao_raspberry.gif)
+
+*Interface web rodando na Pi: detecção das letras em tempo real.*
+
+## Estrutura
+
 ## Estrutura
 
 ```
