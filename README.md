@@ -10,8 +10,6 @@ Projeto final da Parte 1 da disciplina IESTI05 – Machine Learning System Engin
 
 ## Estrutura
 
-## Estrutura
-
 ```
 LibrasAlphabetRecognition/
 ├── src/
